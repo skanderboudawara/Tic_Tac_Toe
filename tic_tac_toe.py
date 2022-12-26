@@ -3,6 +3,7 @@ import src.board as B
 import src.const as C
 from os import system
 
+
 def clear_sys():
     """
     To clear the system
@@ -17,6 +18,7 @@ def clear_sys():
         system('clear')
     except Exception:
         system('cls')
+
 
 def launch_game():
     """
@@ -33,7 +35,7 @@ def launch_game():
     while get_input:
         nb_players = input('Select 0, 1, 2 or 3: ')
         if nb_players.lower() == '0':
-            exit
+            quit()
         elif nb_players.lower() == '3':
             if not printed:
                 sc_board.print_score()
@@ -62,4 +64,4 @@ if __name__ == '__main__':
                 'Try again? (y/n): ')
             get_input = not (restart_over.upper().startswith(('Y', 'N')))
         if restart_over.upper() == 'N':
-            start = not start
+            quit()

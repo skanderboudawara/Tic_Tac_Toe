@@ -152,8 +152,12 @@ class TicTacToBoard():
         :returns: None
         """
         clear_sys()
-        for row in ([' '] + self.rows):
-            print('  '.join(self.board.get(row)) + '\n')
+        board = C.BOARD
+        for row in self.rows:
+            for col in self.cols:
+                board = board.replace(f'{row}{col}', self.board.get(row)[int(col)])
+        board = re.sub("[A-C][1-3]", "🔲", board)
+        print(board)
 
     def evaluate_winner(self):
         """
