@@ -1,9 +1,10 @@
 
 from random import choice as random_choice
 from os import system
-from time import time
+from time import time, sleep
 import src.const as C
 import re
+
 
 def clear_sys():
     """
@@ -106,7 +107,7 @@ class TicTacToBoard():
         self.player1 = None
         self.player2 = None
         self.state = False
-        self.current = None
+        self.current = ''
         self.step = 1
         self.score = 0
 
@@ -154,7 +155,10 @@ class TicTacToBoard():
         board = C.BOARD
         for row in self.rows:
             for col in self.cols:
-                board = board.replace(f'{row}{col}', self.board.get(row)[int(col)])
+                board = board.replace(
+                    f'{row}{col}', self.board.get(row)[int(col)])
+        board = board.replace('0', str(self.step)).replace(
+            'PLAYER', self.current)
         board = re.sub("[A-C][1-3]", "🔲", board)
         print(board)
 
@@ -237,6 +241,11 @@ class TicTacToBoard():
 
         :returns: (tuple(bool)), evaluation of Winner and game finished
         """
+        choice_text = random_choice(list(C.THINKING.keys()))
+        print(C.THINKING[choice_text], end='')
+        for _ in range(5):
+            print('.', end='', flush=True)
+            sleep(0.5)
         pc_choice = random_choice(self.choices)
         return self.execute_update(pc_choice, self.pc)
 
@@ -371,7 +380,7 @@ class TicTacToBoard():
         elif self.is_winner == 'PC':
             print(
                 C.PC_WIN
-                .replace(0, str(self.step))
+                .replace('0', str(self.step))
             )
         else:
             print(C.DRAW)
