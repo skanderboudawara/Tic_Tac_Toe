@@ -2,16 +2,24 @@
 
 I was just bored so I coded something waiting for my flight
 
-a console Tic Tac Toe
+2 players or Player vs PC
+
+a console Tic Tac Toe + Score dashboard
 
 ### Menu Game
+```
 ==========================================
-
-  👾 Weclcome to the Tic Tac Toe Board  👾 
-
+    👾 Welcome to the Tic Tac Toe Board  👾 
 ==========================================
+    [1] For Single Player (vs Computer)
+    [2] For 2 Players
 
+    [3] Show score board
+    
+    [0] to Exit Game
+```
 ### The starting board
+```
    1  2  3
 
 A  🔲  🔲  🔲
@@ -19,9 +27,9 @@ A  🔲  🔲  🔲
 B  🔲  🔲  🔲
 
 C  🔲  🔲  🔲
-
+```
 ### In Game
-
+```
    1  2  3
 
 A  ❌  🔲  ❌
@@ -29,9 +37,9 @@ A  ❌  🔲  ❌
 B  ⭕️  🔲  🔲
 
 C  ⭕️  ❌  ⭕️
-
+```
 ### Winner
-
+```
    1  2  3
 
 A  ❌  ❌  ❌
@@ -39,20 +47,39 @@ A  ❌  ❌  ❌
 B  ⭕️  🔲  ⭕️
 
 C  ⭕️  ❌  ⭕️
+```
+### Choice selection
+```
+🤔 PLAYER it is your Turn [TICTOE]
+Select one of the following choices
+Choices  👉: ALL_CHOICE
+____________________
+```
 
 ### Winner Screen
-==========================================
+```
+=====================================================================
+  🏆 Congrats! The winner is PLAYER in 0 steps with a score of 999
+=====================================================================
+```
 
-  🏆 Congrats! The winner is You in 8 steps with a score of 4008.0
-
-==========================================
+### Draw Screen
+```
+=====================================================================
+                       🥶 Draw! No winner ! 
+=====================================================================
+```
 
 ### Score Board
-
-RANK     USERNAME     SCORE
-
-#1         ASM        54.0
-
-#2         SKA        77.0
-
-#3         AAA        4008.0
+```
+==========================================
+            🎖️ Score Board 🎖️
+==========================================
+    RANK    |   USERNAME    |   SCORE
+    
+    #🥇            SKA          34
+    #🥈            BOU          143
+    #🥉                            
+    #4                            
+    #5                            
+```

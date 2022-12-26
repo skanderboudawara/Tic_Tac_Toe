@@ -1,8 +1,9 @@
 
-import random
-import os
-import time
-
+from random import choice as random_choice
+from os import system
+from time import time
+import src.const as C
+import re
 
 def clear_sys():
     """
@@ -15,9 +16,9 @@ def clear_sys():
     :returns: None
     """
     try:
-        os.system('clear')
+        system('clear')
     except Exception:
-        os.system('cls')
+        system('cls')
 
 
 class ScoreBoard():
@@ -39,7 +40,7 @@ class ScoreBoard():
         """
         assert isinstance(
             user_name, str), 'Wrong Type: User name must be a string'
-        assert isinstance(score, float), 'Wrong Type: score must be a integer'
+        assert isinstance(score, int), 'Wrong Type: score must be a integer'
 
         eval_score = self.is_best_score(score)
         if eval_score and isinstance(eval_score, bool):
@@ -56,13 +57,13 @@ class ScoreBoard():
 
         :returns: (bool or str), True or str if it's a good score else False
         """
-        assert isinstance(score, float), 'Wrong Type: score must be a integer'
+        assert isinstance(score, int), 'Wrong Type: score must be a integer'
 
         if self.score_board == {} or len(self.score_board.keys()) < 5:
             return True
-        scores = [float(key) for key in self.score_board.keys()]
+        scores = [int(key) for key in self.score_board.keys()]
         scores.sort()
-        return next((str(key) for key in scores if score < float(key)), False)
+        return next((str(key) for key in scores if score < int(key)), False)
 
     def print_score(self):
         """
@@ -73,13 +74,20 @@ class ScoreBoard():
         :returns: None
         """
         if self.score_board == {}:
-            return
-        scores = [float(key) for key in self.score_board.keys()]
-        scores.sort()
-        print("\nRANK     USERNAME     SCORE\n")
-        for index, score in enumerate(scores):
-            print(
-                f'#{str(index+1)}         {self.score_board[str(score)]}        {str(score)}\n')
+            score_board = C.SCORE_BOARD
+        else:
+            scores = [int(key) for key in self.score_board.keys()]
+            scores.sort()
+            score_board = C.SCORE_BOARD
+            for index, score in enumerate(scores):
+                print(index+1)
+                score_board = (
+                    score_board
+                    .replace(f'AAA{str(index+1)}', self.score_board[str(score)])
+                    .replace(f'SCORE{str(index+1)}', str(score))
+                )
+        score_board = re.sub("(AAA|SCORE)[1-5]", "   ", score_board)
+        print(score_board)
 
 
 class TicTacToBoard():
@@ -87,17 +95,21 @@ class TicTacToBoard():
     Class to manage the full game
     """
 
-    def __init__(self):
+    def __init__(self, nb_players):
+
+        assert isinstance(nb_players, str), "nb_players must be a string"
+
         self.cols = ['1', '2', '3']
         self.rows = ['A', 'B', 'C']
         self.pc = None
-        self.user = None
+        self.nb_players = int(nb_players)
         self.is_winner = None
+        self.player1 = None
+        self.player2 = None
         self.state = False
         self.current = None
         self.step = 1
         self.score = 0
-        clear_sys()
 
     def init_choices(self):
         """
@@ -152,7 +164,8 @@ class TicTacToBoard():
         :returns: (bool), True if there is a winner else False
         """
         wining_pc = [self.pc]*3
-        wining_user = [self.user]*3
+        wining_player1 = [self.player1]*3
+        wining_player2 = [self.player2]*3
         diagonal_wining_1 = [
             self.board[row][int(col)] for col, row in zip(self.cols, self.rows)]
         diagonal_wining_2 = [self.board[row][int(col)] for col, row in zip(
@@ -166,12 +179,17 @@ class TicTacToBoard():
             value = value if len(value) == 3 else value[1:]
             if value == wining_pc:
                 self.is_winner = 'PC'
-                return True
-            elif value == wining_user:
-                self.is_winner = 'YOU'
-                return True
+                break
+            elif value == wining_player1:
+                self.is_winner = 'PLAYER 1'
+                break
+            elif value == wining_player2:
+                self.is_winner = 'PLAYER 2'
+                break
+        else:
+            return False
 
-        return False
+        return True
 
     def evaluate_end_game(self):
         """
@@ -183,9 +201,9 @@ class TicTacToBoard():
         """
         res1 = [len([i for i in self.board[row] if i not in ['🔲', *self.rows]])
                 for row in self.rows]
-        return res1 == [3, 3, 3]
+        return res1 == [3]*3
 
-    def get_user_choice(self):
+    def get_user_choice(self, user):
         """
         Will get the user input
 
@@ -193,16 +211,20 @@ class TicTacToBoard():
 
         :returns: (tuple(bool)), evaluation of Winner and game finished
         """
-        start = time.time()
+        start = time()
         get_input = True
         print(
-            f'[Step {str(self.step)}] Select one of the following choices: {", ".join(self.choices)}: \n')
+            C.SELECT_CHOICE
+            .replace('PLAYER', self.current)
+            .replace('TICTOE', user)
+            .replace('ALL_CHOICE', ", ".join(self.choices))
+        )
         while get_input:
             user_choice = input('Your choice: ')
             get_input = user_choice not in self.choices
-        end = time.time() - start
-        self.score = round(self.step * (self.score + end), 0)
-        return self.execute_update(user_choice, self.user)
+        end = time() - start
+        self.score = int(round(self.step * (self.score + end), 0))
+        return self.execute_update(user_choice, user)
 
     def get_pc_choice(self):
         """
@@ -212,7 +234,7 @@ class TicTacToBoard():
 
         :returns: (tuple(bool)), evaluation of Winner and game finished
         """
-        pc_choice = random.choice(self.choices)
+        pc_choice = random_choice(self.choices)
         return self.execute_update(pc_choice, self.pc)
 
     def execute_update(self, choice, who):
@@ -229,6 +251,7 @@ class TicTacToBoard():
         assert isinstance(who, str), "Wrong Type: who must be a string"
         assert choice in self.choices, f"Wrong Value: choice must be in {', '.join(self.choices)}"
         assert who in ['❌', '⭕️'], "Wrong Value: who must be in ['❌', '⭕️']"
+
         self.choices.remove(choice)
         self.update_board_dict(choice, who)
         self.draw_board()
@@ -243,14 +266,51 @@ class TicTacToBoard():
 
         :returns: None
         """
-        assert isinstance(
-            who, str), "Wrong Type: who must be a string"
+        assert isinstance(who, str), "Wrong Type: who must be a string"
         assert isinstance(choice, str), "Wrong Type: choice must be a string"
-        assert who in [
-            '❌', '⭕️'], "Wrong Value: who must be in ['❌', '⭕️']"
+        assert who in ['❌', '⭕️'], "Wrong Value: who must be in ['❌', '⭕️']"
+
         previous_row = self.board[choice[0]]
         previous_row[int(choice[1])] = who
         self.board[choice[0]] = previous_row
+
+    def get_player_input(self):
+        """ 
+        To get user input and convert it
+
+        :param: None
+
+        :returns: (str), the selected choice converted to ❌ or ⭕️
+        """
+        get_input = True
+        while get_input:
+            tic_or_toe = input(
+                f'{self.current}, please select between "X", "O": ')
+            get_input = tic_or_toe.upper() not in ['X', 'O']
+        tic_or_toe = '❌' if tic_or_toe.upper() == 'X' else '⭕️'
+        return tic_or_toe
+
+    def get_remaining_tic_or_toe(self, choice):
+        """
+        if X is selected return O and vice versa
+
+        :param choice: (str), X or O
+
+        :return: (str), the remaining choice
+        """
+        return '❌' if choice == '⭕️' else '⭕️'
+
+    def get_player1_info(self):
+        """
+        To get player 1 choice
+
+        :param: None
+
+        :returns: the remaining choice
+        """
+        self.current = 'PLAYER 1'
+        self.player1 = self.get_player_input()
+        return self.get_remaining_tic_or_toe(self.player1)
 
     def pre_start_game(self):
         """
@@ -260,23 +320,23 @@ class TicTacToBoard():
 
         :returns: None
         """
-
-        if random.choice(['PC', 'YOU']) == 'PC':
-            self.pc = random.choice(['❌', '⭕️'])
-            self.user = '❌' if self.pc == '⭕️' else '⭕️'
-            self.current = 'PC'
+        if self.nb_players == 1:
+            if random_choice(['PC', 'PLAYER 1']) == 'PC':
+                self.pc = random_choice(['❌', '⭕️'])
+                self.player1 = self.get_remaining_tic_or_toe(self.pc)
+                self.current = 'PC'
+            else:
+                self.pc = self.get_player1_info()
+        elif random_choice(['PLAYER 1', 'PLAYER 2']) == 'PLAYER 1':
+            print('\nPLAYER 1 You will go first\n')
+            self.player2 = self.get_player1_info()
         else:
-            get_input = True
-            while get_input:
-                user_choice = input(
-                    'You will go first, please select between "X", "O": ')
-                get_input = user_choice.upper() not in ['X', 'O']
-            self.user = '❌' if user_choice.upper() == 'X' else '⭕️'
-            self.pc = '❌' if self.user == '⭕️' else '⭕️'
-            self.current = 'YOU'
+            print('\nPLAYER 2 You will go first\n')
+            self.current = 'PLAYER 2'
+            self.player2 = self.get_player_input()
+            self.player1 = self.get_remaining_tic_or_toe(self.player2)
+
         self.draw_board()
-        if self.current == 'PC':
-            print(f'The computer will go first and have chosen {self.pc}')
 
     def start_game(self):
         """
@@ -298,19 +358,20 @@ class TicTacToBoard():
         :returns: None
         """
         clear_sys()
-        if self.is_winner == 'YOU':
-            print('\n==========================================')
+        if self.is_winner in ['PLAYER 1', 'PLAYER 2']:
             print(
-                f'\n  🏆 Congrats! The winner is You in {str(self.step)} steps with a score of {self.score}')
-            print('\n==========================================')
+                C.PLAYER_WIN
+                .replace('PLAYER', self.is_winner)
+                .replace('0', str(self.step))
+                .replace('999', str(self.score))
+            )
         elif self.is_winner == 'PC':
-            print('\n==========================================')
-            print(f'\n  🥲 You lost in {str(self.step)} steps! ')
-            print('\n==========================================')
+            print(
+                C.PC_WIN
+                .replace(0, str(self.step))
+            )
         else:
-            print('\n==========================================')
-            print('\n  🥶 Draw! No winner ! ')
-            print('\n==========================================')
+            print(C.DRAW)
 
     def current_turn(self):
         """
@@ -320,11 +381,18 @@ class TicTacToBoard():
 
         :returns: None
         """
-        if self.current == 'PC':
-            self.state = any(self.get_pc_choice())
-            self.current = 'YOU'
+        if self.nb_players == 1:
+            if self.current == 'PC':
+                self.state = any(self.get_pc_choice())
+                self.current = 'PLAYER 1'
+            else:
+                self.state = any(self.get_user_choice(self.player1))
+                self.current = 'PC'
+        elif self.current == 'PLAYER 2':
+            self.state = any(self.get_user_choice(self.player2))
+            self.current = 'PLAYER 1'
         else:
-            self.state = any(self.get_user_choice())
-            self.current = 'PC'
+            self.state = any(self.get_user_choice(self.player1))
+            self.current = 'PLAYER 2'
 
         self.step += 1
