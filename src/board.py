@@ -80,7 +80,6 @@ class ScoreBoard():
             scores.sort()
             score_board = C.SCORE_BOARD
             for index, score in enumerate(scores):
-                print(index+1)
                 score_board = (
                     score_board
                     .replace(f'AAA{str(index+1)}', self.score_board[str(score)])
@@ -103,7 +102,7 @@ class TicTacToBoard():
         self.rows = ['A', 'B', 'C']
         self.pc = None
         self.nb_players = int(nb_players)
-        self.is_winner = None
+        self.is_winner = ''
         self.player1 = None
         self.player2 = None
         self.state = False
