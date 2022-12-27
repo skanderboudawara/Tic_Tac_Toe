@@ -1,57 +1,60 @@
-MENU_SCREEN = '''
+PATH_SCORE_BOARD = "./data/src/scores.json"
+
+MENU_SCREEN = """
 ==========================================
-    👾 Welcome to the Tic Tac Toe Board  👾 
+    👾 Welcome to the Tic Tac Toe Board  👾
 ==========================================
     [1] For Single Player (vs Computer)
-    [2] For 2 Players
+    [2] For Single Player (Very HARD)
+    [3] For 2 Players
 
-    [3] Show score board
-    
+    [4] Show score board
+
     [0] to Exit Game
-'''
+"""
 
-SCORE_BOARD = '''
+SCORE_BOARD = """
 ==========================================
             🎖️ Score Board 🎖️
 ==========================================
     RANK    |   USERNAME    |   SCORE
-    
+
     #🥇            AAA1          SCORE1
     #🥈            AAA2          SCORE2
     #🥉            AAA3          SCORE3
     #4             AAA4          SCORE4
     #5             AAA5          SCORE5
 
-'''
+"""
 
 
-DRAW = '''
+DRAW = """
 =====================================================================
-                       🥶 Draw! No winner ! 
+                       🥶 Draw! No winner !
 =====================================================================
-'''
+"""
 
-PC_WIN = '''
+BOT_WIN = """
 =====================================================================
-                     🥲 You lost in 0 steps! 
+                     🥲 You lost in 0 steps!
 =====================================================================
-'''
+"""
 
-PLAYER_WIN = '''
+PLAYER_WIN = """
 =====================================================================
   🏆 Congrats! The winner is PLAYER in 0 steps with a score of 999
 =====================================================================
-'''
+"""
 
-SELECT_CHOICE = '''
+SELECT_CHOICE = """
 🤔 PLAYER it is your Turn [TICTOE]
 Select one of the following choices
 Choices  👉: ALL_CHOICE
 ____________________
 
-'''
+"""
 
-BOARD = '''
+BOARD = """
 
       ————————————————————
       |   | 1  |  2 |  3 |
@@ -62,14 +65,14 @@ BOARD = '''
       ————————————————————
       | C | C1 | C2 | C3 |
       ————————————————————
-'''
+"""
 
 THINKING = {
-    '1': '🤔 Hummm ',
-    '2': '🧐 Wait for my next move ',
-    '3': '🤨 Let\'s see what you did here ',
-    '4': '🤖 01011000 01001111 ',
-    '5': '👾 Watch out for this move ',
-    '6': '🧠 I am not chat GPT but I can do something ',
-    '7': '👀 ',
+    "1": "🤔 Hummm ",
+    "2": "🧐 Wait for my next move ",
+    "3": "🤨 Let's see what you did here ",
+    "4": "🤖 01011000 01001111 ",
+    "5": "👾 Watch out for this move ",
+    "6": "🧠 I am not chat GPT but I can do something ",
+    "7": "👀 ",
 }

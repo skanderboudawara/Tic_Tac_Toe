@@ -1,24 +1,36 @@
-# Tic_Tac_Toe
+# Tic Tac Toe
 
-I was just bored so I coded something waiting for my flight
+😂 I was just bored so I coded something waiting for my flight ✈️
 
-2 players or Player vs PC
+## Features:
+- Terminal Tic Tac Toe
+- Terminal Score Board with history
+- Player vs Player
+- Player vs Random Computer
+- Player vs Hard computer
 
-a console Tic Tac Toe + Score dashboard
+## Goal of the exercise
+- use of Class inheritance 
+- use of different Array/Dict manipulations
+- use of asserts
+- use of pytest
+- Folder/File architecture
 
-### Menu Game
+## Design
+#### Menu Game
 ```
 ==========================================
-    👾 Welcome to the Tic Tac Toe Board  👾 
+    👾 Welcome to the Tic Tac Toe Board  👾
 ==========================================
     [1] For Single Player (vs Computer)
-    [2] For 2 Players
+    [2] For Single Player (Very HARD)
+    [3] For 2 Players
 
-    [3] Show score board
-    
+    [4] Show score board
+
     [0] to Exit Game
 ```
-### The starting board
+#### The starting board
 ```
 ————————————————————
 |   | 1  |  2 |  3 |
@@ -31,7 +43,7 @@ a console Tic Tac Toe + Score dashboard
 ————————————————————
 
 ```
-### In Game
+#### In Game
 ```
 ————————————————————
 |   | 1  |  2 |  3 |
@@ -43,7 +55,7 @@ a console Tic Tac Toe + Score dashboard
 | C | 🔲 | ⭕️ | 🔲 |
 ————————————————————
 ```
-### Winner
+#### Winner
 ```
 ————————————————————
 |   | 1  |  2 |  3 |
@@ -55,7 +67,7 @@ a console Tic Tac Toe + Score dashboard
 | C | 🔲 | ⭕️ | ❌ |
 ————————————————————
 ```
-### Choice selection
+#### Choice selection
 ```
 🤔 PLAYER it is your Turn [TICTOE]
 Select one of the following choices
@@ -63,21 +75,21 @@ Choices  👉: ALL_CHOICE
 ____________________
 ```
 
-### Winner Screen
+#### Winner Screen
 ```
 =====================================================================
   🏆 Congrats! The winner is PLAYER in 0 steps with a score of 999
 =====================================================================
 ```
 
-### Draw Screen
+#### Draw Screen
 ```
 =====================================================================
                        🥶 Draw! No winner ! 
 =====================================================================
 ```
 
-### Score Board
+#### Score Board
 ```
 ==========================================
             🎖️ Score Board 🎖️

@@ -1,11 +1,41 @@
-import src.board as B
+from data.src.game import ScoreBoard, Game
+import data.src.const as C
 import pytest
+import json
+
+
+def test_printing_high_score(capfd):
+    ScoreB = ScoreBoard()
+    ScoreB.score_board = {
+        '100': 'SKA',
+    }
+
+    ScoreB.print_score()
+    out, err = capfd.readouterr()
+
+    scoreboard_to_print = '''
+==========================================
+            🎖️ Score Board 🎖️
+==========================================
+    RANK    |   USERNAME    |   SCORE
+
+    #🥇            SKA          100
+    #🥈                            
+    #🥉                            
+    #4                             
+    #5                             
+
+
+'''
+    assert out == scoreboard_to_print
 
 
 def test_add_score_board():
-    sc_board = B.ScoreBoard()
+    sc_board = ScoreBoard()
     sc_board.add_score('skander', 200)
     assert sc_board.score_board == {'200': 'SKA'}, "Error"
+    with open(C.PATH_SCORE_BOARD, 'r+') as f:
+        assert {'200': 'SKA'} == json.load(f)
 
     with pytest.raises(AssertionError, match='^Wrong Type:'):
         sc_board.add_score(5, 200)
@@ -14,7 +44,7 @@ def test_add_score_board():
 
 
 def test_is_best_score():
-    sc_board = B.ScoreBoard()
+    sc_board = ScoreBoard()
     sc_board.score_board = {}
     assert sc_board.is_best_score(100)
 
@@ -33,17 +63,13 @@ def test_is_best_score():
 
 
 def test_init_choices():
-    TicTacToe = B.TicTacToBoard('2')
-    TicTacToe.init_choices()
-
+    TicTacToe = Game(2)
     assert TicTacToe.choices == ['A1', 'A2',
                                  'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
 
 
 def test_init_board_dict():
-    TicTacToe = B.TicTacToBoard('2')
-    TicTacToe.init_board_dict()
-
+    TicTacToe = Game(2)
     expected_dict = {
         ' ': [' ', '1', '2', '3'],
         'A': ['A', '🔲', '🔲', '🔲'],
@@ -55,10 +81,9 @@ def test_init_board_dict():
 
 
 def test_evaluate_winner():
-    TicTacToe = B.TicTacToBoard('1')
-    TicTacToe.pc = '❌'
+    TicTacToe = Game(1)
+    TicTacToe.bot = '❌'
     TicTacToe.player1 = '⭕️'
-
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
         'A': ['A', '🔲', '🔲', '🔲'],
@@ -85,7 +110,7 @@ def test_evaluate_winner():
     }
 
     assert TicTacToe.evaluate_winner()
-    assert TicTacToe.is_winner == 'PC'
+    assert TicTacToe.is_winner == 'BOT'
 
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
@@ -95,7 +120,7 @@ def test_evaluate_winner():
     }
 
     assert TicTacToe.evaluate_winner()
-    assert TicTacToe.is_winner == 'PC'
+    assert TicTacToe.is_winner == 'BOT'
 
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
@@ -105,7 +130,7 @@ def test_evaluate_winner():
     }
 
     assert TicTacToe.evaluate_winner()
-    assert TicTacToe.is_winner == 'PC'
+    assert TicTacToe.is_winner == 'BOT'
 
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
@@ -115,7 +140,7 @@ def test_evaluate_winner():
     }
 
     assert TicTacToe.evaluate_winner()
-    assert TicTacToe.is_winner == 'PC'
+    assert TicTacToe.is_winner == 'BOT'
 
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
@@ -127,7 +152,7 @@ def test_evaluate_winner():
     assert TicTacToe.evaluate_winner()
     assert TicTacToe.is_winner == 'PLAYER 1'
 
-    TicTacToe = B.TicTacToBoard('2')
+    TicTacToe = Game(2)
     TicTacToe.player2 = '❌'
     TicTacToe.player1 = '⭕️'
 
@@ -154,7 +179,7 @@ def test_evaluate_winner():
 
 def test_evaluate_end_game():
 
-    TicTacToe = B.TicTacToBoard('2')
+    TicTacToe = Game(2)
 
     TicTacToe.board = {
         ' ': [' ', '1', '2', '3'],
@@ -186,7 +211,7 @@ def test_evaluate_end_game():
 
 def test_execute_update():
 
-    TicTacToe = B.TicTacToBoard('2')
+    TicTacToe = Game(2)
     TicTacToe.choices = ['A1', 'A2', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
 
     with pytest.raises(AssertionError, match='^Wrong Type:'):
@@ -217,14 +242,14 @@ def test_execute_update():
     assert TicTacToe.choices == ['A1', 'A2', 'B1', 'B3', 'C1', 'C2', 'C3']
     assert TicTacToe.board == expected_board
 
-    TicTacToe.pc = '❌'
+    TicTacToe.bot = '❌'
     TicTacToe.user = '⭕️'
     assert TicTacToe.execute_update('B3', '❌') == (False, False)
 
 
 def test_update_board_dict():
 
-    TicTacToe = B.TicTacToBoard('2')
+    TicTacToe = Game(2)
     TicTacToe.choices = ['A1', 'A2', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
 
     with pytest.raises(AssertionError, match='^Wrong Type:'):
@@ -254,9 +279,7 @@ def test_update_board_dict():
 
 
 def test_printing_board(capfd):
-    TicTacToe = B.TicTacToBoard('2')
-    TicTacToe.init_board_dict()
-    TicTacToe.step = 5
+    TicTacToe = Game(1)
     TicTacToe.current = 'PLAYER 1'
 
     TicTacToe.draw_board()
@@ -284,7 +307,7 @@ def test_printing_board(capfd):
         'C': ['C', '🔲', '🔲', '🔲'],
     }
     TicTacToe.step = 19
-    TicTacToe.current = 'PC'
+    TicTacToe.current = 'BOT'
     TicTacToe.draw_board()
     out, err = capfd.readouterr()
 
@@ -302,29 +325,3 @@ def test_printing_board(capfd):
 
 '''
     assert out == board_to_print
-
-
-def test_printing_high_score(capfd):
-    ScoreB = B.ScoreBoard()
-    ScoreB.score_board = {
-        '100': 'SKA',
-    }
-
-    ScoreB.print_score()
-    out, err = capfd.readouterr()
-
-    scoreboard_to_print = '''
-==========================================
-            🎖️ Score Board 🎖️
-==========================================
-    RANK    |   USERNAME    |   SCORE
-    
-    #🥇            SKA          100
-    #🥈                            
-    #🥉                            
-    #4                             
-    #5                             
-
-
-'''
-    assert out == scoreboard_to_print
